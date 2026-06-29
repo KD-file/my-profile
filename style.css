@@ -9,9 +9,44 @@ body {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
   padding: 20px;
+}
+
+/* ---- NAVIGATION ---- */
+.navbar {
+  width: 100%;
+  max-width: 800px;
+  background: white;
+  padding: 15px 30px;
+  border-radius: 50px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+}
+
+.navbar a {
+  color: #4a5568;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 8px 16px;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+}
+
+.navbar a:hover {
+  background: #667eea;
+  color: white;
+}
+
+.navbar a.active {
+  background: #667eea;
+  color: white;
 }
 
 .container {
@@ -134,7 +169,7 @@ h3 i {
   font-weight: 500;
 }
 
-/* Hobbies (NEW - Clean vertical list) */
+/* Hobbies */
 .hobbies {
   margin: 25px 0;
   padding: 20px;
@@ -218,6 +253,75 @@ h3 i {
   box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
 }
 
+/* ---- REGISTER FORM STYLES ---- */
+.register-form {
+  text-align: left;
+  margin-top: 10px;
+}
+
+.register-form label {
+  display: block;
+  font-weight: 600;
+  color: #2d3748;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.register-form input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: border 0.3s;
+}
+
+.register-form input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.register-form .btn-register {
+  width: 100%;
+  margin-top: 25px;
+  padding: 14px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.register-form .btn-register:hover {
+  background: #5a67d8;
+  transform: scale(1.02);
+}
+
+.message-box {
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 12px;
+  display: none;
+  font-weight: 500;
+}
+
+.message-box.success {
+  display: block;
+  background: #c6f6d5;
+  color: #276749;
+  border: 1px solid #48bb78;
+}
+
+.message-box.error {
+  display: block;
+  background: #fed7d7;
+  color: #9b2c2c;
+  border: 1px solid #fc8181;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .profile-card {
@@ -229,5 +333,9 @@ h3 i {
   .social-links a {
     padding: 6px 14px;
     font-size: 0.85rem;
+  }
+  .navbar {
+    border-radius: 30px;
+    padding: 15px;
   }
 }
