@@ -23,10 +23,7 @@
 
     <div class="container">
       <div class="profile-card">
-        <h1 style="margin-bottom: 5px">📝 Register</h1>
-        <p style="color: #718096; margin-bottom: 20px">
-          Create your account to access the Admin panel.
-        </p>
+        <h1 style="margin-bottom: 5px">Register</h1>
 
         <form
           id="registerForm"
@@ -104,12 +101,12 @@
         // Validation
         if (password !== confirmPassword) {
           messageBox.className = "message-box error";
-          messageBox.textContent = "❌ Passwords do not match!";
+          messageBox.textContent = "Passwords do not match!";
           return;
         }
         if (password.length < 6) {
           messageBox.className = "message-box error";
-          messageBox.textContent = "❌ Password must be at least 6 characters!";
+          messageBox.textContent = "Password must be at least 6 characters!";
           return;
         }
 
@@ -129,11 +126,11 @@
           .then((data) => {
             if (data.error) {
               messageBox.className = "message-box error";
-              messageBox.textContent = "❌ " + data.error;
+              messageBox.textContent = "✖ " + data.error;
             } else {
               messageBox.className = "message-box success";
               messageBox.textContent =
-                "✅ " + data.message + " Redirecting to Login...";
+                data.message + " Redirecting to Login...";
               document.getElementById("registerForm").reset();
               setTimeout(() => {
                 window.location.href = "/login.html";
@@ -142,7 +139,7 @@
           })
           .catch((err) => {
             messageBox.className = "message-box error";
-            messageBox.textContent = "❌ Server error. Please try again.";
+            messageBox.textContent = "Server error. Please try again.";
             console.error(err);
           });
       }
