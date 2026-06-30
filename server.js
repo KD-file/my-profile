@@ -10,31 +10,30 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
-app.use(express.json()); // To read JSON from forms
-
-// Serve your static files (HTML, CSS, JS) from the "public" folder
+app.use(express.json());
 app.use(express.static("public"));
 
 // --- MongoDB Connection ---
 mongoose
   .connect(process.env.MONGODB_URI, {
-    family: 4, // Forces IPv4, bypasses IPv6 DNS issues
+    family: 4,
   })
   .then(() => console.log("✅ Connected to MongoDB Atlas"))
   .catch((err) => console.log("❌ MongoDB Error:", err));
 
-// --- Mongoose Schemas (Database Structure) ---
+// --- Mongoose Schemas ---
 
-// 1. User Schema
+// 1. User Schema (with isAdmin field)
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  isAdmin: { type: Boolean, default: false }, // NEW: Admin flag
   createdAt: { type: Date, default: Date.now },
 });
 const User = mongoose.model("User", UserSchema);
 
-// 2. Message Schema (for Contact form)
+// 2. Message Schema
 const MessageSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
@@ -58,6 +57,14 @@ const authenticate = (req, res, next) => {
   }
 };
 
+// --- Helper: Admin Authorization Middleware ---
+const requireAdmin = (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res.status(403).json({ error: "Admin access required." });
+  }
+  next();
+};
+
 // --- API ROUTES ---
 
 // 1. REGISTER
@@ -65,18 +72,29 @@ app.post("/api/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Check if user exists
     const existingUser = await User.findOne({ email });
     if (existingUser)
       return res.status(400).json({ error: "Email already registered." });
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({ name, email, password: hashedPassword });
+    // Check if this is the first user (make them admin)
+    const userCount = await User.countDocuments();
+    const isAdmin = userCount === 0; // First user becomes admin
+
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      isAdmin,
+    });
     await newUser.save();
 
-    res.status(201).json({ message: "Registration successful! Please login." });
+    res.status(201).json({
+      message: isAdmin
+        ? "Registration successful! You are the ADMIN."
+        : "Registration successful! Please login.",
+    });
   } catch (error) {
     res.status(500).json({ error: "Server error during registration." });
   }
@@ -95,9 +113,14 @@ app.post("/api/login", async (req, res) => {
     if (!validPassword)
       return res.status(400).json({ error: "Invalid email or password." });
 
-    // Generate JWT Token
+    // Generate JWT Token with isAdmin flag
     const token = jwt.sign(
-      { id: user._id, name: user.name, email: user.email },
+      {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+      },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
@@ -105,7 +128,7 @@ app.post("/api/login", async (req, res) => {
     res.json({
       message: "Login successful!",
       token,
-      user: { name: user.name, email: user.email },
+      user: { name: user.name, email: user.email, isAdmin: user.isAdmin },
     });
   } catch (error) {
     res.status(500).json({ error: "Server error during login." });
@@ -124,8 +147,8 @@ app.post("/api/contact", async (req, res) => {
   }
 });
 
-// 4. ADMIN - Get all messages (Protected)
-app.get("/api/admin/messages", authenticate, async (req, res) => {
+// 4. ADMIN - Get all messages (Protected + Admin only)
+app.get("/api/admin/messages", authenticate, requireAdmin, async (req, res) => {
   try {
     const messages = await Message.find().sort({ createdAt: -1 });
     res.json(messages);
