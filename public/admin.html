@@ -66,9 +66,7 @@
         window.location.href = "/login.html";
       } else if (!isAdmin) {
         // Logged in but NOT admin? Redirect to home with error
-        alert(
-          "⛔ Admin access only. You are not authorized to view this page."
-        );
+        alert("Admin access only. You are not authorized to view this page.");
         window.location.href = "/index.html";
       } else {
         document.getElementById("adminName").textContent = userName || "Admin";
@@ -120,7 +118,7 @@
           })
           .catch((err) => {
             document.getElementById("loading").textContent =
-              "❌ Failed to load messages. Please refresh.";
+              "Failed to load messages. Please refresh.";
             console.error(err);
           });
       }

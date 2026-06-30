@@ -23,7 +23,7 @@
 
     <div class="container">
       <div class="profile-card">
-        <h1 style="margin-bottom: 5px">🔐 Login</h1>
+        <h1 style="margin-bottom: 5px">Login</h1>
         <p style="color: #718096; margin-bottom: 20px">
           Login to access the Admin Dashboard
         </p>
@@ -97,7 +97,7 @@
           .then((data) => {
             if (data.error) {
               messageBox.className = "message-box error";
-              messageBox.textContent = "❌ " + data.error;
+              messageBox.textContent = "✖ " + data.error;
             } else {
               // Save token, user info, AND admin status
               localStorage.setItem("authToken", data.token);
@@ -108,7 +108,7 @@
               );
 
               messageBox.className = "message-box success";
-              messageBox.textContent = "✅ Login successful! Redirecting...";
+              messageBox.textContent = "Login successful! Redirecting...";
 
               setTimeout(() => {
                 // Redirect based on admin status
@@ -122,7 +122,7 @@
           })
           .catch((err) => {
             messageBox.className = "message-box error";
-            messageBox.textContent = "❌ Server error. Please try again.";
+            messageBox.textContent = "Server error. Please try again.";
             console.error(err);
           });
       }

@@ -23,7 +23,7 @@
 
     <div class="container">
       <div class="profile-card">
-        <h1 style="margin-bottom: 5px">📬 Contact Me</h1>
+        <h1 style="margin-bottom: 5px">Contact Me</h1>
         <p style="color: #718096; margin-bottom: 20px">
           Send me a message! I'll read it in the Admin panel.
         </p>
@@ -126,7 +126,7 @@
           .then((data) => {
             if (data.error) {
               msgBox.className = "message-box error";
-              msgBox.textContent = "❌ " + data.error;
+              msgBox.textContent = "✖ " + data.error;
             } else {
               msgBox.className = "message-box success";
               msgBox.textContent = "✅ " + data.message;
@@ -138,7 +138,7 @@
           })
           .catch((err) => {
             msgBox.className = "message-box error";
-            msgBox.textContent = "❌ Server error. Please try again.";
+            msgBox.textContent = "Server error. Please try again.";
             console.error(err);
           });
       }
