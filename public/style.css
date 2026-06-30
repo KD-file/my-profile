@@ -253,7 +253,7 @@ h3 i {
   box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
 }
 
-/* ---- REGISTER FORM STYLES ---- */
+/* ---- REGISTER / LOGIN FORM STYLES ---- */
 .register-form {
   text-align: left;
   margin-top: 10px;
@@ -267,16 +267,19 @@ h3 i {
   margin-bottom: 5px;
 }
 
-.register-form input {
+.register-form input,
+.register-form textarea {
   width: 100%;
   padding: 12px 15px;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
   font-size: 1rem;
+  font-family: inherit;
   transition: border 0.3s;
 }
 
-.register-form input:focus {
+.register-form input:focus,
+.register-form textarea:focus {
   outline: none;
   border-color: #667eea;
 }
@@ -322,7 +325,44 @@ h3 i {
   border: 1px solid #fc8181;
 }
 
-/* Responsive */
+/* ---- ADMIN TABLE STYLES ---- */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 0.9rem;
+  text-align: left;
+}
+.admin-table th {
+  background: #667eea;
+  color: white;
+  padding: 10px;
+}
+.admin-table td {
+  padding: 10px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top;
+}
+.admin-table tr:hover {
+  background: #f7fafc;
+}
+.logout-btn {
+  background: #e53e3e;
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 20px;
+  transition: 0.3s;
+}
+.logout-btn:hover {
+  background: #c53030;
+  transform: scale(1.02);
+}
+
+/* ---- RESPONSIVE ---- */
 @media (max-width: 600px) {
   .profile-card {
     padding: 25px;
