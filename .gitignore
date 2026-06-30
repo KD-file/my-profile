@@ -1,0 +1,6 @@
+# Ignore environment variables (contains passwords)
+.env
+
+# Ignore node_modules (too big, can be reinstalled)
+node_modules/
+

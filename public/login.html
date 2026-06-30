@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Kurt Nievera</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="index.html"><i class="fas fa-home"></i> Home</a>
+      <a href="about.html"><i class="fas fa-user"></i> About</a>
+      <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+      <a href="register.html"><i class="fas fa-user-plus"></i> Register</a>
+      <a href="login.html" class="active"
+        ><i class="fas fa-sign-in-alt"></i> Login</a
+      >
+    </nav>
+
+    <div class="container">
+      <div class="profile-card">
+        <h1 style="margin-bottom: 5px">🔐 Login</h1>
+        <p style="color: #718096; margin-bottom: 20px">
+          Login to access the Admin Dashboard
+        </p>
+
+        <form
+          id="loginForm"
+          class="register-form"
+          onsubmit="handleLogin(event)"
+        >
+          <label for="loginEmail"
+            ><i class="fas fa-envelope"></i> Email Address</label
+          >
+          <input
+            type="email"
+            id="loginEmail"
+            placeholder="Enter your email"
+            required
+          />
+
+          <label for="loginPassword"
+            ><i class="fas fa-lock"></i> Password</label
+          >
+          <input
+            type="password"
+            id="loginPassword"
+            placeholder="Enter your password"
+            required
+          />
+
+          <button type="submit" class="btn-register">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </button>
+
+          <div id="messageBox" class="message-box"></div>
+        </form>
+
+        <p style="margin-top: 15px; color: #718096; font-size: 0.9rem">
+          Don't have an account?
+          <a href="register.html" style="color: #667eea; font-weight: 600"
+            >Register here</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // If already logged in, redirect to Admin
+      if (localStorage.getItem("authToken")) {
+        window.location.href = "/admin.html";
+      }
+
+      function handleLogin(event) {
+        event.preventDefault();
+        const email = document.getElementById("loginEmail").value.trim();
+        const password = document.getElementById("loginPassword").value;
+        const messageBox = document.getElementById("messageBox");
+
+        messageBox.className = "message-box";
+        messageBox.style.display = "block";
+        messageBox.textContent = "⏳ Logging in...";
+        messageBox.style.background = "#e2e8f0";
+        messageBox.style.color = "#2d3748";
+
+        fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.error) {
+              messageBox.className = "message-box error";
+              messageBox.textContent = "❌ " + data.error;
+            } else {
+              // Save token and user info to localStorage (session)
+              localStorage.setItem("authToken", data.token);
+              localStorage.setItem("userName", data.user.name);
+
+              messageBox.className = "message-box success";
+              messageBox.textContent =
+                "✅ Login successful! Redirecting to Admin...";
+              setTimeout(() => {
+                window.location.href = "/admin.html";
+              }, 1500);
+            }
+          })
+          .catch((err) => {
+            messageBox.className = "message-box error";
+            messageBox.textContent = "❌ Server error. Please try again.";
+            console.error(err);
+          });
+      }
+    </script>
+  </body>
+</html>
