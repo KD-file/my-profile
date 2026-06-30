@@ -56,13 +56,20 @@
     </div>
 
     <script>
-      // --- SECURITY: Check if user is logged in ---
+      // --- SECURITY: Check if user is logged in AND is admin ---
       const token = localStorage.getItem("authToken");
       const userName = localStorage.getItem("userName");
+      const isAdmin = localStorage.getItem("isAdmin") === "true"; // NEW: Check admin status
 
       if (!token) {
-        // No token? Kick them to login page immediately.
+        // No token? Kick them to login page.
         window.location.href = "/login.html";
+      } else if (!isAdmin) {
+        // Logged in but NOT admin? Redirect to home with error
+        alert(
+          "⛔ Admin access only. You are not authorized to view this page."
+        );
+        window.location.href = "/index.html";
       } else {
         document.getElementById("adminName").textContent = userName || "Admin";
         fetchMessages();
@@ -72,14 +79,14 @@
         fetch("/api/admin/messages", {
           method: "GET",
           headers: {
-            Authorization: token, // Send the JWT token
+            Authorization: token,
           },
         })
           .then((response) => {
-            if (response.status === 401) {
-              // Token expired or invalid. Clear storage and redirect.
+            if (response.status === 401 || response.status === 403) {
               localStorage.removeItem("authToken");
               localStorage.removeItem("userName");
+              localStorage.removeItem("isAdmin");
               window.location.href = "/login.html";
               return;
             }
@@ -118,7 +125,6 @@
           });
       }
 
-      // Basic sanitization to prevent XSS (just in case)
       function escapeHtml(text) {
         if (!text) return "";
         const div = document.createElement("div");
@@ -129,6 +135,7 @@
       function logout() {
         localStorage.removeItem("authToken");
         localStorage.removeItem("userName");
+        localStorage.removeItem("isAdmin");
         window.location.href = "/login.html";
       }
     </script>

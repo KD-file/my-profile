@@ -70,9 +70,10 @@
     </div>
 
     <script>
-      // If already logged in, redirect to Admin
+      // If already logged in, redirect to Admin (if admin) or Home (if regular user)
       if (localStorage.getItem("authToken")) {
-        window.location.href = "/admin.html";
+        const isAdmin = localStorage.getItem("isAdmin") === "true";
+        window.location.href = isAdmin ? "/admin.html" : "/index.html";
       }
 
       function handleLogin(event) {
@@ -98,15 +99,24 @@
               messageBox.className = "message-box error";
               messageBox.textContent = "❌ " + data.error;
             } else {
-              // Save token and user info to localStorage (session)
+              // Save token, user info, AND admin status
               localStorage.setItem("authToken", data.token);
               localStorage.setItem("userName", data.user.name);
+              localStorage.setItem(
+                "isAdmin",
+                data.user.isAdmin ? "true" : "false"
+              );
 
               messageBox.className = "message-box success";
-              messageBox.textContent =
-                "✅ Login successful! Redirecting to Admin...";
+              messageBox.textContent = "✅ Login successful! Redirecting...";
+
               setTimeout(() => {
-                window.location.href = "/admin.html";
+                // Redirect based on admin status
+                if (data.user.isAdmin) {
+                  window.location.href = "/admin.html";
+                } else {
+                  window.location.href = "/index.html";
+                }
               }, 1500);
             }
           })
